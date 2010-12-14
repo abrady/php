@@ -1,0 +1,18 @@
+* album creation
+** name album
+** DONE drag something onto the browser window and have it get the info. 
+-- see DragDrop.htm
+** upload to a server
+*** DONE via form
+*** via drag and drop
+** save the image to a database
+* album view
+** see albums
+** view thumbnails
+* album edit
+** change album name
+** name pictures
+** add info about pictures
+* album collaboration
+** multiple people adding to one album.
+** multiple concurrent edits.
