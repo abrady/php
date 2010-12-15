@@ -132,8 +132,7 @@ Uploader.prototype = {
         var xhr = new XMLHttpRequest;
 
         xhr.open("POST", this.form.action, true);
-        //xhr.onreadystatechange = function() {
-		xhr.onload = function() {
+        xhr.onreadystatechange = function() {
             if (this.readyState === 4) {
                 alert(this.responseText);
             }

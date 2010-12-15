@@ -1,0 +1,31 @@
+<html>
+  <head>
+<title>Drag and Drop Images</title>
+<script type="text/javascript" src="uploader.js"></script>
+<script>
+
+  // called when upload finished
+  function file_uploaded_cb()
+  {
+    if (this.readyState === 4) {
+      alert(this.statusText + ": " + this.responseText);
+    }
+  }
+
+  function dofilesdropped(event)
+  {
+    event.stopPropagation(); 
+    event.preventDefault();
+    Uploader.send_files(event.dataTransfer.files, "upload.php", file_uploaded_cb);
+  }
+</script>
+</head>
+<body>
+<h2>Drag an image or images onto the area below</h2>
+<div id="album" style="min-height: 100px; white-space: pre; border: 1px solid black;"
+     ondragenter="document.getElementById('album').textContent = ''; event.stopPropagation(); event.preventDefault();"
+     ondragover="event.stopPropagation(); event.preventDefault();"
+     ondrop="dofilesdropped(event);">
+
+</body>
+</html>
