@@ -35,35 +35,41 @@ Uploader = {
 		xhr.open("POST", action, true);
 		xhr.onreadystatechange = uploaded_cb;		
 		xhr.setRequestHeader("Content-Type", contentType);
-		var req_data = "";
+		var body = "";
 		
 		for(var i = 0; i < datatransfer_files.length; i++){
 			var filename = datatransfer_files[i].name;
 			
 			// start of this part 
-			req_data += "--" + boundary + CRLF; 
+			body += "--" + boundary + CRLF; 
 			
 			// Content-Disposition header contains name of the field used
 			// to upload the file and also the name of the file as it was
 			// on the user's computer.
-			req_data += 'Content-Disposition: form-data; ';
-			req_data += 'name=file' + i + '; ';
-			req_data += 'filename="'+ filename + '"' + CRLF;
+			body += 'Content-Disposition: form-data; ';
+			body += 'name=file' + i + '; ';
+			body += 'filename="'+ filename + '"' + CRLF;
 			
 			// Content-Type header contains the mime-type of the file to
 			// send. Although we could build a map of mime-types that match
 			// certain file extensions, we'll take the easy approach and
 			// send a general binary header: application/octet-stream.
-			req_data += "Content-Type: application/octet-stream" + CRLF + CRLF;
+			body += "Content-Type: application/octet-stream" + CRLF + CRLF;
 			
 			// File contents read as binary data, obviously
-			req_data += datatransfer_files[i].getAsBinary() + CRLF;
+			body += datatransfer_files[i].getAsBinary() + CRLF;
 		}
-		
+
+		// add the number of files as a param
+		body += "--" + boundary + CRLF; 
+		body += 'Content-Disposition: form-data; ';
+		body += 'name="num_files"' + CRLF + CRLF;
+		body += datatransfer_files.length + CRLF;
+
 		// terminate the request
-		req_data += "--" + boundary + "--" + CRLF;
+		body += "--" + boundary + "--" + CRLF;
 		
 		// finally send the request as binary data
-		xhr.sendAsBinary(req_data);
+		xhr.sendAsBinary(body);
 	}
 };
