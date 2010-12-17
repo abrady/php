@@ -2,9 +2,10 @@
 ** name album
 ** DONE drag something onto the browser window and have it get the info. 
 -- see DragDrop.htm
-** upload to a server
+** DONE upload to a server
 *** DONE via form
-*** via drag and drop
+*** DONE via drag and drop
+*** DONE multiple files uploaded
 ** save the image to a database
 * album view
 ** see albums
