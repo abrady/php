@@ -7,6 +7,7 @@
 *** DONE via drag and drop
 *** DONE multiple files uploaded
 ** save the image to a database
+*** DONE save blob data to database
 * album view
 ** see albums
 ** view thumbnails
@@ -17,3 +18,6 @@
 * album collaboration
 ** multiple people adding to one album.
 ** multiple concurrent edits.
+* fb app
+- ID: 166075663433750
+- secret: be98a62f42aee62500d525f11dfac5f1

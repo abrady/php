@@ -1,9 +1,15 @@
 <?php
 
-$LF = "\n";
-//$LF = "<br/>";
+//$LF = "\n";
+$LF = "<br/>";
 
 // print out the rows from a query NOTE: destructive
+
+function _mysql_print_error($err_msg)
+{
+	print $err_msg . " sql error:{" . mysql_error() . "}". $GLOBALS['LF'];
+}
+
 
 function _mysql_table_exists($table_name) 
 {
@@ -18,7 +24,7 @@ function _mysql_show_columns($table_name)
 	print "columns for table: ";
 	$q = mysql_query("SHOW COLUMNS FROM $table_name");
 	if(!$q){
-		print "couldn't query table $table_name<br/>\n";
+		_mysql_print_error("couldn't query table $table_name");
 		return;
 	}
 	while($row = mysql_fetch_assoc($q))
@@ -72,7 +78,7 @@ try {
 	$conn = mysql_connect($host, $user, $pass);
 	
 	if(!$conn) {
-		print "failed to connect to mysql_connect($host, $user, $pass);" . $LF;
+		_mysql_print_error("failed to connect to mysql_connect($host, $user, $pass);");
 		return;
 	}
 
@@ -84,33 +90,33 @@ try {
 	$db_name = "db_".basename(getcwd());
 	// print "db_name: $db_name" . $LF;
 
-	$db_found = false;
-	$db_list = mysql_list_dbs();
-	while ($row = mysql_fetch_object($db_list)) {
-		// print "database: ";
-		// print_r($row);
-		// print $LF;
-		if($row->Database == $db_name){
-			print "db found! ". $LF;
-			$db_found = true;
-			break;
-		}	
-	}
+	// remember, SQL is case IN-sensitive
+	// $db_found = false;
+	// $db_list = mysql_list_dbs();
+	// while ($row = mysql_fetch_object($db_list)) {
+	// 	print "database: ";
+	// 	print_r($row);
+	// 	print $LF;
+	// 	if(0==strcasecmp($row->Database, $db_name)){
+	// 		print "db found! ". $LF;
+	// 		$db_found = true;
+	// 		break;
+	// 	}	
+	// }
 	
-	
-	if(!$db_found) {
+	if(!mysql_select_db($db_name)){
 		print "couldn't select db $db_name, creating" . $LF;
 
 		if(!mysql_query("CREATE DATABASE $db_name"))
 		{
-			print "couldn't create db $db_name" . $LF;
+			_mysql_print_error("couldn't create db $db_name");
 			return;
 		}
 		print "db created" . $LF;
 	}
 
 	if(!mysql_select_db($db_name)){
-		print "couldn't use db $db_name even after creating it" . $LF;
+		_mysql_print_error("couldn't use db $db_name even after creating it");
 		return;
 	}
 	print "using db $db_name" . $LF;
@@ -118,7 +124,11 @@ try {
 	//TODO make sure the table matches up
 	if(!_mysql_table_exists("test")){
 		print "table 'test' doesn't exist. making" . $LF;
-		$q = mysql_query("CREATE TABLE test (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, name VARCHAR(32), PRIMARY KEY (id))");
+		$q = mysql_query("CREATE TABLE test (" 
+						 . "id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT"
+						 . ", name VARCHAR(32)"
+						 . ", pic BLOB"
+						 . ", PRIMARY KEY (id))");
 		if(!$q){
 			print "couldn't create table 'test'" . $LF;
 			return;
@@ -132,10 +142,40 @@ try {
 
 	print "table 'test' exists" . $LF;
 	
-	_mysql_show_columns('test');
+//	_mysql_show_columns('test');
+	
+	// insert the data
+	// make sure to use 'mysql_real_escape_string()' for binary data
+	$raw_data = "--\r\n'\"--";
+	$data = mysql_real_escape_string($raw_data);
+	print $data . $LF;
+	$q = mysql_query("INSERT INTO test (name, pic) VALUES ('foo', '{$data}')");
+	if(!$q){
+		_mysql_print_error("insert of data failed.");
+		return;
+	}
 
 	print "done!" . $LF;
 }
 catch(Exception $e) {
 	echo 'caught exception: ', $e->getMessage(), $LF;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
